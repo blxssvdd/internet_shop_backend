@@ -74,8 +74,8 @@ def get_review(review_id: str) -> Review:
     return db.one_or_404(db.session.query(Review).where(Review.id == review_id))
 
 
-def del_review(text) -> str:
-    review = Review(text=text, id=uuid4().hex)
+def del_review(review_id) -> str:
+    review = db.session.query(Review).filter_by(id=review_id).first()
     db.session.delete(review)
     db.session.commit()
     return "Successful"
