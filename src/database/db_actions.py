@@ -55,6 +55,11 @@ def del_product(prod_id: str) -> str:
     db.session.commit()
     return "Successful"
 
+# ВІДГУКИ
+
+def get_reviews() -> List[Review]:
+    return db.session.query(Review).all()
+
 
 def add_review_by_product(review: Review, prod_id: str) -> str:
     product = db.one_or_404(db.session.query(Product).where(Product.id == prod_id))
@@ -70,8 +75,20 @@ def add_review(text) -> str:
     return "Successful"
 
 
+def edit_review(
+        rev_id: str,
+        content: str,
+        rating: str,
+) -> str:
+    review = db.one_or_404(db.session.query(Review)).where(Review.id == rev_id)
+    review.content = content
+    review.rating = rating
+    db.session.commit()
+    return "Successful"
+
+
 def get_review(review_id: str) -> Review:
-    return db.one_or_404(db.session.query(Review).where(Review.id == review_id))
+    return db.session.query(Review).filter_by(id=review_id).first()
 
 
 def del_review(review_id) -> str:

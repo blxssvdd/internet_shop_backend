@@ -83,13 +83,72 @@ class ProductAPI(Resource):
     def delete(self, product_id: str):
         msg = db_actions.del_product(product_id)
         response = jsonify(msg)
-        response.status_code = 201
+        response.status_code - 201
         return response
     
 
+
 class ReviewAPI(Resource):
-    def get(self, review_id):
-        pass
+    def row_db_to_json(self, reviews: list):
+        data = []
+        for review in reviews:
+            data.append({
+                "id": review.id,
+                "product_id": review.product_id,
+                "content": review.content,
+                "rating": review.rating,
+                "created_at": review.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                "author": review.author
+            })
+        data_json = jsonify(data)
+        data_json.status_code = 201
+        return data_json
+
+    def get(self, review_id: str = None, product_id: str = None):
+        if review_id:
+            review = db_actions.get_review(review_id)
+            return self.row_db_to_json([review])
+        elif product_id:
+            reviews = db_actions.add_review_by_product(product_id)
+            return self.row_db_to_json(reviews)
+        else:
+            reviews = db_actions.get_reviews()
+            return self.row_db_to_json(reviews)
+
+    def post(self):
+        parse = reqparse.RequestParser()
+        parse.add_argument("product_id")
+        parse.add_argument("content")
+        parse.add_argument("rating")
+        args = parse.parse_args()
+        rev_id = db_actions.add_review(
+            product_id=args.get("product_id"),
+            content=args.get("content"),
+            rating=args.get("rating")
+        )
+        response = jsonify(dict(review_id=rev_id))
+        response.status_code = 201
+        return response
+
+    def put(self, review_id: str):
+        parse = reqparse.RequestParser()
+        parse.add_argument("content")
+        parse.add_argument("rating")
+        args = parse.parse_args()
+        msg = db_actions.edit_review(
+            rev_id=review_id,
+            product_id=args.get("content"),
+            description=args.get("rating"),
+        )
+        response = jsonify(msg)
+        response.status_code = 201
+        return response
+
+    def delete(self, review_id: str):
+        msg = db_actions.del_review(review_id)
+        response = jsonify(msg)
+        response.status_code = 201
+        return response
 
 
 api.add_resource(ProductAPI, "/api/products/", "/api/products/<product_id>")
