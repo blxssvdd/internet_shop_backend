@@ -61,38 +61,44 @@ def get_reviews() -> List[Review]:
     return db.session.query(Review).all()
 
 
-def add_review_by_product(review: Review, prod_id: str) -> str:
-    product = db.one_or_404(db.session.query(Product).where(Product.id == prod_id))
-    product.reviews.append(review)
-    db.session.commit
-    return "Successful"
+def get_review(review_id: str) -> Review:
+    return db.one_or_404(db.session.query(Review).where(Review.id == review_id))
 
-def add_review(text) -> str:
-    review = Review(text=text, id=uuid4().hex)
-    review.reviews.append(review)
-    db.add(review)
-    db.session.commit
-    return "Successful"
+
+def add_review(
+    text: str,
+    author: str,
+    rating: float
+) -> str:
+    review = Review(
+        id=uuid4().hex,
+        text=text,
+        author=author,
+        rating=rating
+    )
+    db.session.add(review)
+    db.session.commit()
+    db.session.refresh(review)
+    return review.id
 
 
 def edit_review(
         rev_id: str,
-        content: str,
-        rating: str,
+        text: str,
+        author: str,
+        rating: float
 ) -> str:
-    review = db.one_or_404(db.session.query(Review)).where(Review.id == rev_id)
-    review.content = content
+    review = db.one_or_404(db.session.query(Review).where(Review.id == rev_id))
+    review.text = text
+    review.author = author
     review.rating = rating
     db.session.commit()
     return "Successful"
 
 
-def get_review(review_id: str) -> Review:
-    return db.session.query(Review).filter_by(id=review_id).first()
-
-
-def del_review(review_id) -> str:
-    review = db.session.query(Review).filter_by(id=review_id).first()
+def del_review(rev_id: str) -> str:
+    review = db.one_or_404(db.session.query(Review).where(Review.id == rev_id))
     db.session.delete(review)
     db.session.commit()
     return "Successful"
+

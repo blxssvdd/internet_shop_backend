@@ -23,7 +23,8 @@ class Review(Base):
 
     id: Mapped[str] = mapped_column(String(), primary_key=True, default=uuid4().hex)
     text: Mapped[str] = mapped_column(String())
-
+    rating: Mapped[float] = mapped_column()
+    author: Mapped[str] = mapped_column(String())
 
 
 class Product(Base):
