@@ -60,10 +60,6 @@ class User(Base):
     @property
     def password(self):
         return "Don't use this"
-    
-    @property
-    def _password(self):
-        return "Don't use this"
 
     @password.setter
     def password(self, pwd):
