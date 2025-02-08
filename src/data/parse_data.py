@@ -4,7 +4,8 @@ from uuid import uuid4
 
 from requests_html import HTMLSession
 
-from src.database.models import Product, db
+from src.database.models import Product
+from src.database.base import db
 
 
 URL = "https://rozetka.com.ua/mobile-phones/c80003/"
