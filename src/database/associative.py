@@ -9,7 +9,7 @@ rev_prod_assoc = Table(
     Column("review_id", ForeignKey("reviews.id"), primary_key=True),
     Column("product_id", ForeignKey("products.id"), primary_key=True)
 )
-
+    
 
 user_prod_cart_assoc = Table(
     "user_prod_cart_assoc",

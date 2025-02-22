@@ -6,6 +6,7 @@ from flask import Flask, jsonify
 from dotenv import load_dotenv
 from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
+from flask_migrate import Migrate
 
 from src.database.base import db
 from src.data import parse_data
@@ -22,10 +23,11 @@ app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 db.init_app(app)
 api = Api(app)
 jwt = JWTManager(app)
+migrate = Migrate(app, db)
 
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
     # parse_data.get_products()
 
 
@@ -189,4 +191,5 @@ api.add_resource(UserAPI, "/api/user/")
 api.add_resource(TokenAPI, "/api/token/")
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3000)
+    app.run(debug=True, port=3001)
+    
