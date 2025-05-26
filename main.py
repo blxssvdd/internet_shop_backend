@@ -9,7 +9,6 @@ from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, creat
 from flask_migrate import Migrate
 
 from src.database.base import db
-from src.data import parse_data
 from src.database import db_actions
 
 
@@ -28,7 +27,7 @@ migrate = Migrate(app, db)
 
 # with app.app_context():
 #     db.create_all()
-    # parse_data.get_products()
+
 
 
 class ProductAPI(Resource):
